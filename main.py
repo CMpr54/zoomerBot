@@ -7,7 +7,6 @@ import sqlite3
 import schedule
 import json
 import time
-import apiai
 from multiprocessing import Process
 from random import choice
 from datetime import datetime
@@ -31,23 +30,8 @@ if not json_data:
     logging.fatal('Json is empty')
 
 # Токен стесняется, не смотрите
-bot = telebot.TeleBot('1085413551:AAHPzvywT2G8PabnoZNpsLabaRzQtLJtdfw')
+bot = telebot.TeleBot('1054926363:AAFIizR6JDjoe4TJtmmocU0zIbiYtLYPWqA')
 
-# стикеры
-sticker_brain = 'CAACAgIAAxkBAAIC3V6S1pvF1p86MLzrh3f5vIoPvX12AAINAAN2oqAv_LtzGV_Ox78YBA'
-sticker_car = 'CAACAgIAAxkBAAIC316S1qMELdyaNMuhY5qDf2L42GecAAIOAAN2oqAvNi6qlYsoOd0YBA'
-sticker_fingers = 'CAACAgIAAxkBAAIC4V6S1q1uAAHXa6sM_WeXebBTORHLQQACDwADdqKgL7oTqoU-rx61GAQ'
-sticker_poster = 'CAACAgIAAxkBAAIC416S1raMHSSFFLK3ZQs-O76WfDHdAAIQAAN2oqAv0UvxdPK0oBEYBA'
-sticker_stupid = 'CAACAgIAAxkBAAIC5V6S1sLMwlMpzSV-HzAUyxnANemBAAIRAAN2oqAvmdctZ8AmSBQYBA'
-sticker_surprised = 'CAACAgIAAxkBAAIC516S1sqryWe7_N0jV-bHBSZkSrfLAAISAAN2oqAvECeADCokyIgYBA'
-sticker_angry = 'CAACAgIAAxkBAAIC6V6S1tJi2JwarUOsCq574Lg0ch9EAAITAAN2oqAvM-23KXQpG6EYBA'
-sticker_hey_you = 'CAACAgIAAxkBAAIC616S1tnFHWBhS1V8neTScUX0i4crAAIUAAN2oqAvY3pzo1XrUwkYBA'
-sticker_really = 'CAACAgIAAxkBAAIEZF6Uj87bhHJDkTOcp563jtKxPcEWAAIVAAN2oqAv3236KzzF6VEYBA'
-sticker_sad = 'CAACAgIAAxkBAAIEZl6UliNaJtcVxjbZWVk1jj075CUQAAIWAAN2oqAvTEMCrxw9_m0YBA'
-
-# разнообразные списки и словари
-list_of_stickers = [sticker_brain, sticker_car, sticker_fingers, sticker_poster, sticker_stupid, sticker_surprised,
-                    sticker_angry, sticker_hey_you, sticker_really, sticker_sad]
 
 list_of_time_zones = ["-11", "-10", "-9", "-8", "-7", "-6", "-5", "-4", "-3", "-2", "-1", "0", "+1", "+2", "+3", "+4",
                       "+5", "+6", "+7", "+8", "+9", "+10", "+11", "+12"]
@@ -69,12 +53,6 @@ list_of_days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturda
 format_date = {0: 'Monday', 1: 'Tuesday', 2: 'Wednesday', 3: 'Thursday', 4: 'Friday', 5: 'Saturday', 6: 'Sunday'}
 
 # огромное колличество клавиатур для удобства
-keyboard_exercise = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True)
-keyboard_exercise.add('Отжимания')
-keyboard_exercise.add('Приседания')
-keyboard_exercise.add('Подтягивания')
-keyboard_exercise.add('Планка')
-keyboard_exercise.add('Поднимание ног')
 
 keyboard_ask_timezone = telebot.types.ReplyKeyboardMarkup()
 keyboard_ask_timezone.add(telebot.types.KeyboardButton('Отправить геолокацию', request_location=True))
@@ -88,16 +66,6 @@ keyboard_time_zone.row("-6", "-7", "-8", "-9", "-10", "-11")
 
 keyboard_noyes = telebot.types.ReplyKeyboardMarkup()
 keyboard_noyes.add("Да", "Нет")
-
-keyboard_num = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True)
-keyboard_num.add("8", "16", "18", "24", "32", "40", "48", "56", "64", "72", "80", "88", "96", "104", "112")
-
-keyboard_num_strap = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True)
-keyboard_num_strap.add("15", "30", "45", "60", "75", "90", "105", "120", "135", "150", "165", "180", "195", "210",
-                       "225")
-
-keyboard_pull = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True)
-keyboard_pull.add("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15")
 
 keyboard_time = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True)
 keyboard_time.row('4:00', '4:30', '5:00', '5:30', '6:00', '6:30')
@@ -202,6 +170,10 @@ class RegError(Exception):
 class User:
     def __init__(self, user_name, training_type, date_and_time, time_zone):
         self.user_name = user_name
+        self.zoom_login = ''
+        self.zoom_password = ''
+        self.gh_login = ''
+        self.gh_password = ''
         if training_type:
             self.training_type = eval(training_type)
         else:
