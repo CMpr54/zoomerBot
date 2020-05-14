@@ -64,7 +64,7 @@ class User:
 
 
 def data_day():
-    today = datetime.date.today()
+    today = datetime.today()
     weekday = format_date[datetime.weekday(today)]
 
     day = today.day
@@ -158,13 +158,13 @@ def check_time():
 p1 = Process(target=check_time, args=())
 
 # ну тут понятно
-schedule.every().day.at("13:26").do(job, 0)
-schedule.every().day.at("13:27").do(job, 1)
-schedule.every().day.at("13:28").do(job, 2)
-schedule.every().day.at("15:07").do(job, 3)
-schedule.every().day.at("15:08").do(job, 4)
-schedule.every().day.at("15:09").do(job, 5)
-schedule.every().day.at("15:09").do(job, 6)
+schedule.every().day.at("13:30").do(job, 0)
+schedule.every().day.at("13:31").do(job, 1)
+schedule.every().day.at("13:32").do(job, 2)
+schedule.every().day.at("15:33").do(job, 3)
+schedule.every().day.at("15:34").do(job, 4)
+schedule.every().day.at("15:35").do(job, 5)
+schedule.every().day.at("15:36").do(job, 6)
 
 """
                                         Хэндлеры
