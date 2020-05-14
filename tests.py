@@ -18,14 +18,6 @@ import time
 logging.getLogger('schedule').propagate = False
 logging.basicConfig(level=logging.INFO)
 
-# # открытие json
-# with open('test.json') as f:
-#     json_data = json.load(f)
-#
-# # проверка json
-# if not json_data:
-#     logging.fatal('Json is empty')
-
 # Токен стесняется, не смотрите
 bot = telebot.TeleBot('1268099740:AAFm0gKTZTnAy2bHSXlTINIibFfaDzbKtFY')
 
@@ -56,6 +48,9 @@ class User:
         self.num_class = num_class
         self.letter_class = letter_class
         self.change = change
+
+    def __str__(self):
+        return "{} {} {}{}".format(self.fio, self.email, self.num_class,  self.letter_class)
 
 
 """
@@ -107,9 +102,8 @@ def get_values(num_class, letter_class, fio, date, subject, email):
 def send_attendance(url, data):
     for d in data:
         try:
-            print(d)
-            # requests.post(url, data=d)
-            # print("Form Submitted.")
+            requests.post(url, data=d)
+            print("Form Submitted.")
             time.sleep(10)
         except:
             print("Error Occured!")
@@ -136,8 +130,7 @@ def dictionary_update():
     result = cur.execute("SELECT id, FIO, email, num_class, letter_class FROM users").fetchall()
     con.close()
     for info in result:
-        if info[0] not in dictionary_of_users.keys():
-            dictionary_of_users[info[0]] = User(fio=info[1], email=info[2], num_class=info[3], letter_class=info[4])
+        dictionary_of_users[info[0]] = User(fio=info[1], email=info[2], num_class=info[3], letter_class=info[4])
 
 
 # создание и заполнение словаря пользователей
@@ -158,13 +151,13 @@ def check_time():
 p1 = Process(target=check_time, args=())
 
 # ну тут понятно
-schedule.every().day.at("13:30").do(job, 0)
-schedule.every().day.at("13:31").do(job, 1)
-schedule.every().day.at("13:32").do(job, 2)
-schedule.every().day.at("15:33").do(job, 3)
-schedule.every().day.at("15:34").do(job, 4)
-schedule.every().day.at("15:35").do(job, 5)
-schedule.every().day.at("15:36").do(job, 6)
+schedule.every().day.at("06:00").do(job, 0)
+schedule.every().day.at("06:45").do(job, 1)
+schedule.every().day.at("07:15").do(job, 2)
+schedule.every().day.at("08:00").do(job, 3)
+schedule.every().day.at("08:45").do(job, 4)
+schedule.every().day.at("09:15").do(job, 5)
+schedule.every().day.at("10:00").do(job, 6)
 
 """
                                         Хэндлеры
@@ -193,11 +186,12 @@ def start_message(message):
         if tel_id not in dictionary_of_users.keys():
             bot.send_message(message.chat.id, 'Введи ФИО, email, класс и литеру класса\nПример:')
             bot.send_message(message.chat.id, 'Багрянский Константин Дмитриевич\nnanaviju@mail.ru\n10\nА')
+
             dictionary_of_users[tel_id] = User(change=True)
 
             logging.info('New user')
         else:
-            if dictionary_of_users[tel_id].user_name:
+            if dictionary_of_users[tel_id].fio:
                 bot.send_message(message.chat.id, 'Мы встречались, {}'.format(dictionary_of_users[tel_id].fio),
                                  reply_markup=keyboard_main)
     except Exception as start_error:
@@ -205,7 +199,7 @@ def start_message(message):
 
 
 # все основные сообщения идут сюда
-@bot.message_handler(content_types=['text', 'location'])
+@bot.message_handler(content_types=['text'])
 def send_text(message):
     try:
         tel_id = message.from_user.id
@@ -213,14 +207,16 @@ def send_text(message):
             if check(message.text):
                 fio, email, num_class, letter_class = message.text.split("\n")
                 dictionary_of_users[tel_id].update(fio=fio, email=email, num_class=num_class,
-                                                   letter_class=letter_class)
+                                                   letter_class=letter_class, change=False)
                 con = sqlite3.connect("Zommer_db")
                 cur = con.cursor()
+                cur.execute("DELETE from users WHERE id = {}".format(tel_id))
                 cur.execute(
                     """INSERT INTO users (id, FIO, email, num_class, letter_class) VALUES ({}, "{}", "{}", {}, "{}")""".format(
                         tel_id, fio, email, num_class, letter_class))
                 con.commit()
                 con.close()
+                bot.send_message(message.chat.id, 'Успешно')
             else:
                 bot.send_message(message.chat.id, 'Некорректное значение')
         elif not dictionary_of_users[tel_id].change:
@@ -228,17 +224,16 @@ def send_text(message):
                 dictionary_of_users[tel_id].change = True
                 bot.send_message(message.chat.id, 'Введи ФИО, email, класс и литеру класса\nПример:')
                 example = ['Багрянский Константин Дмитриевич\nnanaviju@mail.ru\n10\nА',
-                           'Молотов Кирилл Дмитриевич\nrandom@mail.ru\n9\nА']
-                bot.send_message(message.chat.id, random.choice(example))
+                           'Молотов Кирилл Дмитриевич\nrandom@mail.ru\n9\nА',
+                           'Маршалов Максим Сергеевич\nnanaviju@mail.ru\n10\nА']
+                bot.send_message(message.chat.id, choice(example))
     except Exception as main_error:
-        logging.error('Unknown error in main {}'.format(main_error.__class__.__name__))
+        logging.error('Unknown error in main {}'.format(main_error))
 
 
 """
                                         Запуск бота
 """
-current_datetime = datetime.now()
-print(current_datetime)
 # ну это main, тут всё ясно
 if __name__ == '__main__':
     p1.start()  # запускаем проверку в отдельном потоке
