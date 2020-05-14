@@ -5,15 +5,10 @@ import telebot
 from telebot import types
 import sqlite3
 import schedule
-import json
-import time
-import apiai
 from multiprocessing import Process
 from random import choice
 from datetime import datetime
-from pytz import timezone, utc
 import requests
-from timezonefinder import TimezoneFinder
 
 """
                                          Подгтовка к запуску
@@ -232,7 +227,9 @@ def send_text(message):
             if message.text.lower() == 'изменить данные':
                 dictionary_of_users[tel_id].change = True
                 bot.send_message(message.chat.id, 'Введи ФИО, email, класс и литеру класса\nПример:')
-                bot.send_message(message.chat.id, 'Багрянский Константин Дмитриевич\nnanaviju@mail.ru\n10\nА')
+                example = ['Багрянский Константин Дмитриевич\nnanaviju@mail.ru\n10\nА',
+                           'Молотов Кирилл Дмитриевич\nrandom@mail.ru\n9\nА']
+                bot.send_message(message.chat.id, random.choice(example))
     except Exception as main_error:
         logging.error('Unknown error in main {}'.format(main_error.__class__.__name__))
 
