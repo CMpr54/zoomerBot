@@ -14,6 +14,7 @@ import time
 """
                                          Подгтовка к запуску
 """
+
 # настройка логов
 logging.getLogger('schedule').propagate = False
 logging.basicConfig(level=logging.INFO)
