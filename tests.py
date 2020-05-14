@@ -158,9 +158,9 @@ def check_time():
 p1 = Process(target=check_time, args=())
 
 # ну тут понятно
-schedule.every().day.at("15:35").do(job, 0)
-schedule.every().day.at("15:36").do(job, 1)
-schedule.every().day.at("15:34").do(job, 2)
+schedule.every().day.at("13:26").do(job, 0)
+schedule.every().day.at("13:27").do(job, 1)
+schedule.every().day.at("13:28").do(job, 2)
 schedule.every().day.at("15:07").do(job, 3)
 schedule.every().day.at("15:08").do(job, 4)
 schedule.every().day.at("15:09").do(job, 5)
