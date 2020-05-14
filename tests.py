@@ -16,7 +16,6 @@ import requests
 # настройка логов
 logging.getLogger('schedule').propagate = False
 logging.basicConfig(level=logging.INFO)
-tf = TimezoneFinder()
 
 # # открытие json
 # with open('test.json') as f:
