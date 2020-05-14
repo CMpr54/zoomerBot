@@ -237,8 +237,8 @@ def send_text(message):
 """
                                         Запуск бота
 """
-hour = datetime.time()
-print(hour.hour())
+current_datetime = datetime.now()
+print(current_datetime)
 # ну это main, тут всё ясно
 if __name__ == '__main__':
     p1.start()  # запускаем проверку в отдельном потоке
