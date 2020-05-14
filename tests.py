@@ -65,7 +65,7 @@ class User:
 
 def data_day():
     today = datetime.date.today()
-    weekday = format_date[datetime.date.weekday(today)]
+    weekday = format_date[datetime.weekday(today)]
 
     day = today.day
     month = today.month
