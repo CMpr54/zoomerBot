@@ -1,5 +1,5 @@
 pytelegrambotapi
-pysqlite
+pysqlite3 
 schedule
 datetime
 requests
