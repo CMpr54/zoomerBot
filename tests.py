@@ -32,110 +32,18 @@ tf = TimezoneFinder()
 #     logging.fatal('Json is empty')
 
 # Токен стесняется, не смотрите
-bot = telebot.TeleBot('1085413551:AAHPzvywT2G8PabnoZNpsLabaRzQtLJtdfw')
+bot = telebot.TeleBot('1268099740:AAFm0gKTZTnAy2bHSXlTINIibFfaDzbKtFY')
 
-# стикеры
-sticker_brain = 'CAACAgIAAxkBAAIC3V6S1pvF1p86MLzrh3f5vIoPvX12AAINAAN2oqAv_LtzGV_Ox78YBA'
-sticker_car = 'CAACAgIAAxkBAAIC316S1qMELdyaNMuhY5qDf2L42GecAAIOAAN2oqAvNi6qlYsoOd0YBA'
-sticker_fingers = 'CAACAgIAAxkBAAIC4V6S1q1uAAHXa6sM_WeXebBTORHLQQACDwADdqKgL7oTqoU-rx61GAQ'
-sticker_poster = 'CAACAgIAAxkBAAIC416S1raMHSSFFLK3ZQs-O76WfDHdAAIQAAN2oqAv0UvxdPK0oBEYBA'
-sticker_stupid = 'CAACAgIAAxkBAAIC5V6S1sLMwlMpzSV-HzAUyxnANemBAAIRAAN2oqAvmdctZ8AmSBQYBA'
-sticker_surprised = 'CAACAgIAAxkBAAIC516S1sqryWe7_N0jV-bHBSZkSrfLAAISAAN2oqAvECeADCokyIgYBA'
-sticker_angry = 'CAACAgIAAxkBAAIC6V6S1tJi2JwarUOsCq574Lg0ch9EAAITAAN2oqAvM-23KXQpG6EYBA'
-sticker_hey_you = 'CAACAgIAAxkBAAIC616S1tnFHWBhS1V8neTScUX0i4crAAIUAAN2oqAvY3pzo1XrUwkYBA'
-sticker_really = 'CAACAgIAAxkBAAIEZF6Uj87bhHJDkTOcp563jtKxPcEWAAIVAAN2oqAv3236KzzF6VEYBA'
-sticker_sad = 'CAACAgIAAxkBAAIEZl6UliNaJtcVxjbZWVk1jj075CUQAAIWAAN2oqAvTEMCrxw9_m0YBA'
-
-# разнообразные списки и словари
-list_of_stickers = [sticker_brain, sticker_car, sticker_fingers, sticker_poster, sticker_stupid, sticker_surprised,
-                    sticker_angry, sticker_hey_you, sticker_really, sticker_sad]
-
-list_of_time_zones = ["-11", "-10", "-9", "-8", "-7", "-6", "-5", "-4", "-3", "-2", "-1", "0", "+1", "+2", "+3", "+4",
-                      "+5", "+6", "+7", "+8", "+9", "+10", "+11", "+12"]
-list_of_phrases = ["Красавчик!", "Молодчина!", "Так держать!", "Огонь!", "Чётко!"]
-
-dict_of_talks = {'greeting': 'разобрались как мне тебя называть',
-                 'exercises': 'определились с твоими упражнениями', 'date_time': 'утвердили твоё расписание',
-                 'training': 'закончили тренировку'}
-
-dict_of_exercises = {"Отжимания": [0, 24], "Приседания": [0, 24], "Подтягивания": [0, 24], "Планка": [0, 24],
-                     "Поднимание ног": [0, 24]}
-
-days = {"понедельник": "Monday", "вторник": "Tuesday", "среда": "Wednesday", "четверг": "Thursday",
-        "пятница": "Friday",
-        "суббота": "Saturday", "воскресенье": "Sunday"}
-
-
-timetable = {"Thursday": {
+timetable = {"Friday": {
     "9А": ["Алгебра", "Алгебра", "Русский язык", "Литература", "Физическая культура", "Биология"],
     "10А": ["Математика", "География", "Биология", "Физика", "Астрономия", "Литература"]
-                        }
-             }
-
-
-
-list_of_days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+}
+}
 
 format_date = {0: 'Monday', 1: 'Tuesday', 2: 'Wednesday', 3: 'Thursday', 4: 'Friday', 5: 'Saturday', 6: 'Sunday'}
 
-# огромное колличество клавиатур для удобства
-
 keyboard_main = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True)
 keyboard_main.add("Изменить данные")
-
-"""
-                                        Классы
-"""
-
-
-# ошибка данетки
-class YesNoError(Exception):
-    pass
-
-
-# ошибка при неправильном выборе дня недели
-class WeekdayError(Exception):
-    pass
-
-
-# ошибка неверного формата времени
-class TimeFormatError(Exception):
-    pass
-
-
-# ошибка некоректно введённого времени(например 25:61)
-class TimeError(Exception):
-    pass
-
-
-# ошибка выбора отрицательного кол-ва упражниний
-class ExerciseFormatError(Exception):
-    pass
-
-
-# ошибка выбора нулевого кол-ва упражниний
-class ZeroError(Exception):
-    pass
-
-
-# ошибка возникающая при попытке уменьшения кол-ва упражниний если оно может стать отрицательным или равным 0
-class TooLittle(Exception):
-    pass
-
-
-# ошибка возникающая при попытке ввода времени если минуты не кратны 5 (например 14:41)
-class DivFiveError(Exception):
-    pass
-
-
-# ошибка при попытке ввода пустого имени
-class BlankName(Exception):
-    pass
-
-
-# ошибка регистрации
-class RegError(Exception):
-    pass
 
 
 # класс для хранения информации о юзере
@@ -159,10 +67,8 @@ class User:
                                         Вычислительные функции
 """
 
-def data_day():
-    import datetime
-    format_date = {0: 'Monday', 1: 'Tuesday', 2: 'Wednesday', 3: 'Thursday', 4: 'Friday', 5: 'Saturday', 6: 'Sunday'}
 
+def data_day():
     today = datetime.date.today()
     weekday = format_date[datetime.date.weekday(today)]
 
@@ -175,6 +81,7 @@ def data_day():
         month = '0{}'.format(month)
 
     return ['{}.{}.{}'.format(day, month, today.year), weekday]
+
 
 url = 'https://docs.google.com/forms/d/e/1FAIpQLSc079VlmVT4mfiayMCO14BuPkt8Tx8ZAyDApQ9qtX03Luoudg/formResponse'
 
@@ -195,7 +102,7 @@ def get_values(num_class, letter_class, fio, date, subject, email):
         # email
         "entry.1076833356": "{}".format(email),
 
-        }
+    }
 
     values_list.append(values)
 
@@ -208,12 +115,9 @@ def send_attendance(url, data):
             print(d)
             # requests.post(url, data=d)
             # print("Form Submitted.")
-            # time.sleep(10)
+            time.sleep(10)
         except:
             print("Error Occured!")
-    print('fins')
-
-
 
 
 def job(n):
@@ -224,9 +128,10 @@ def job(n):
         user = dictionary_of_users[i]
         try:
             subject = timetable[weekday][str(user.num_class) + user.letter_class][n]
+            send_attendance(url, get_values(user.num_class, user.letter_class, user.fio, date, subject, user.email))
         except IndexError:
             pass
-        send_attendance(url, get_values(user.num_class, user.letter_class, user.fio, date, subject, user.email))
+
 
 # обновление словаря юзеров
 def dictionary_update():
@@ -269,6 +174,8 @@ schedule.every().day.at("15:09").do(job, 6)
 """
                                         Хэндлеры
 """
+
+
 def check(data):
     data = data.split('\n')
     if len(data) != 4:
@@ -281,6 +188,7 @@ def check(data):
         return False
     else:
         return True
+
 
 # самое первое и самое волнительное сообщение
 @bot.message_handler(commands=['start'])
@@ -329,15 +237,6 @@ def send_text(message):
         logging.error('Unknown error in main {}'.format(main_error.__class__.__name__))
 
 
-
-
-# отлов стикеров
-@bot.message_handler(content_types=['sticker'])
-def sticker_id(message):
-    print(message.sticker.file_id)
-    bot.send_sticker(message.chat.id, choice(list_of_stickers))
-
-
 """
                                         Запуск бота
 """
@@ -345,9 +244,9 @@ print(datetime.hour)
 # ну это main, тут всё ясно
 if __name__ == '__main__':
     p1.start()  # запускаем проверку в отдельном потоке
-    #while True:  # цикл что бы при падении серверов телеграма бот жил
-    #    try:
-    #        bot.polling(none_stop=True)
-    #    except Exception as error:
-    #        logging.fatal("{} LAST CHANCE".format(error.__class__.__name__))
-    #    time.sleep(300)  # а это что бы он не нагружал систему запросами в случае падения серверов телеграма
+    while True:  # цикл что бы при падении серверов телеграма бот жил
+        try:
+            bot.polling(none_stop=True)
+        except Exception as error:
+            logging.fatal("{} LAST CHANCE".format(error.__class__.__name__))
+        time.sleep(300)  # а это что бы он не нагружал систему запросами в случае падения серверов телеграма
