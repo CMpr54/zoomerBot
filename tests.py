@@ -345,9 +345,9 @@ print(datetime.hour)
 # ну это main, тут всё ясно
 if __name__ == '__main__':
     p1.start()  # запускаем проверку в отдельном потоке
-    #while True:  # цикл что бы при падении серверов телеграма бот жил
-    #    try:
-    #        bot.polling(none_stop=True)
-    #    except Exception as error:
-    #        logging.fatal("{} LAST CHANCE".format(error.__class__.__name__))
-    #    time.sleep(300)  # а это что бы он не нагружал систему запросами в случае падения серверов телеграма
+    while True:  # цикл что бы при падении серверов телеграма бот жил
+       try:
+           bot.polling(none_stop=True)
+       except Exception as error:
+           logging.fatal("{} LAST CHANCE".format(error.__class__.__name__))
+       time.sleep(300)  # а это что бы он не нагружал систему запросами в случае падения серверов телеграма
