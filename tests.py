@@ -53,6 +53,9 @@ class User:
     def __str__(self):
         return "{} {} {}{}".format(self.fio, self.email, self.num_class,  self.letter_class)
 
+    def __repr__(self):
+        return "{} {} {}{}".format(self.fio, self.email, self.num_class,  self.letter_class)
+
 
 """
                                         Вычислительные функции
@@ -147,9 +150,16 @@ def check_time():
         # пауза между проверками, чтобы не загружать процессор
         time.sleep(5)
 
+def check_users():
+    while True:
+        if input().lower() == 'users':
+            dictionary_update()
+            print(dictionary_of_users, end='\n')
+
 
 # создание процесса
 p1 = Process(target=check_time, args=())
+p2 = Process(target=check_users, args=())
 
 # ну тут понятно
 schedule.every().day.at("06:00").do(job, 0)
@@ -237,6 +247,7 @@ def send_text(message):
 """
 # ну это main, тут всё ясно
 if __name__ == '__main__':
+    p2.start()
     p1.start()  # запускаем проверку в отдельном потоке
     while True:  # цикл что бы при падении серверов телеграма бот жил
         try:
