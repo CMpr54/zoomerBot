@@ -25,8 +25,13 @@ bot = telebot.TeleBot('1268099740:AAFm0gKTZTnAy2bHSXlTINIibFfaDzbKtFY')
 timetable = {"Friday": {
     "9А": ["Алгебра", "Алгебра", "Русский язык", "Литература", "Физическая культура", "Биология"],
     "10А": ["Математика", "География", "Биология", "Физика", "Астрономия", "Литература"]
-}
-}
+                        },
+
+            "Saturday": {
+    "9А": ["Физика", "Русский язык", "Литература", "Английский язык", "Химия", "Немецкий язык"],
+    "10А": ["Обществознание", "Обществознание", "Математика", "Физическая культура", "Родной язык", "Родная литература"]
+                        }
+            }
 
 format_date = {0: 'Monday', 1: 'Tuesday', 2: 'Wednesday', 3: 'Thursday', 4: 'Friday', 5: 'Saturday', 6: 'Sunday'}
 
@@ -77,33 +82,33 @@ def data_day():
     return ['{}.{}.{}'.format(day, month, today.year), weekday]
 
 
-url = "https://docs.google.com/forms/d/e/1FAIpQLSe9AVNY-Ff0JJvAqX4nEz2-ueiAQwPVNnZRZlToiBAgVanmYA/formResponse"
-# url = "https://docs.google.com/forms/d/e/1FAIpQLSczAO0SaL-V6YgpPUvCeag-HYdl1IQ9JEViUNAUu5Y8yBfxFw/formResponse"
+# url = "https://docs.google.com/forms/d/e/1FAIpQLSe9AVNY-Ff0JJvAqX4nEz2-ueiAQwPVNnZRZlToiBAgVanmYA/formResponse"
+url = "https://docs.google.com/forms/d/e/1FAIpQLSczAO0SaL-V6YgpPUvCeag-HYdl1IQ9JEViUNAUu5Y8yBfxFw/formResponse"
 
 
 def get_values(num_class, letter_class, fio, date, subject, email):
     values_list = []
-    # values = {
-    #     # class
-    #     "entry.1636959309": "{}".format(num_class),
-    #     # class letter
-    #     "entry.1528634530": "{}".format(letter_class),
-    #     # FIO
-    #     "entry.1437687741": "{}".format(fio),
-    #     # data
-    #     "entry.1630759217": "{}".format(date),
-    #     # subject
-    #     "entry.1620919827": "{}".format(subject),
-    #     # email
-    #     "entry.1076833356": "{}".format(email),
-    #
-    # }
     values = {
-        "entry.452086364": "{}".format(fio),
+        # class
+        "entry.1636959309": "{}".format(num_class),
         # class letter
-        "entry.1367140281": "{}".format("Физика"),
+        "entry.1528634530": "{}".format(letter_class),
         # FIO
-    }
+        "entry.1437687741": "{}".format(fio),
+        # data
+        "entry.1630759217": "{}".format(date),
+        # subject
+        "entry.1620919827": "{}".format(subject),
+        # email
+        "entry.1076833356": "{}".format(email),
+            }
+
+    # values = {
+    #     "entry.452086364": "{}".format(fio),
+    #     # class letter
+    #     "entry.1367140281": "{}".format("Физика"),
+    #     # FIO
+    # }
 
     values_list.append(values)
 
@@ -115,15 +120,17 @@ def send_attendance(url, data):
         try:
             requests.post(url, data=d)
             logging.info("Form Submitted.")
-            time.sleep(30)
-        except:
-            logging.warning("Error Occured")
+            time.sleep(3)
+        except Exception as send_error:
+            logging.warning("send_error {}".format(send_error))
 
 
 def job(n):
     global dictionary_of_users
     dictionary_update()
     date, weekday = data_day()
+    if weekday == "Sunday":
+        return
     for i in dictionary_of_users.keys():
         user = dictionary_of_users[i]
         try:
@@ -131,6 +138,7 @@ def job(n):
             send_attendance(url, get_values(user.num_class, user.letter_class, user.fio, date, subject, user.email))
         except IndexError:
             pass
+    logging.info("----------------------------------------------------------------------------------------------------")
 
 
 # обновление словаря юзеров
@@ -159,26 +167,27 @@ def check_time():
 
 
 def check_users():
+    logging.info("----------------------------------------------------------------------------------------------------")
     dictionary_update()
     for i in dictionary_of_users.values():
         print(i)
     print(len(dictionary_of_users), "num_of_users")
+    logging.info("----------------------------------------------------------------------------------------------------")
 
 
 # создание процесса
 p1 = Process(target=check_time, args=())
 
 # ну тут понятно
-schedule.every().day.at("17:13").do(check_users)
-# schedule.every().hour.do(check_users)
-# schedule.every().day.at("06:00").do(job, 0)
-# schedule.every().day.at("06:45").do(job, 1)
-# schedule.every().day.at("07:15").do(job, 2)
-# schedule.every().day.at("08:00").do(job, 3)
-# schedule.every().day.at("08:45").do(job, 4)
-# schedule.every().day.at("09:15").do(job, 5)
-# schedule.every().day.at("10:00").do(job, 6)
-schedule.every().minute.do(job, 0)
+schedule.every().hour.do(check_users)
+schedule.every().day.at("06:00").do(job, 0)
+schedule.every().day.at("06:30").do(job, 1)
+schedule.every().day.at("07:00").do(job, 2)
+schedule.every().day.at("07:30").do(job, 3)
+schedule.every().day.at("08:00").do(job, 4)
+schedule.every().day.at("08:30").do(job, 5)
+schedule.every().day.at("09:00").do(job, 6)
+# schedule.every().minute.do(job, 0)
 
 """
                                         Хэндлеры
@@ -237,7 +246,7 @@ def send_text(message):
                         tel_id, fio, email, num_class, letter_class))
                 con.commit()
                 con.close()
-                bot.send_message(message.chat.id, 'Успешно')
+                bot.send_message(message.chat.id, 'Успешно', reply_markup=keyboard_main)
             else:
                 bot.send_message(message.chat.id, 'Некорректное значение')
         elif not dictionary_of_users[tel_id].change:
