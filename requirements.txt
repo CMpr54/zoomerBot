@@ -1,0 +1,5 @@
+pytelegrambotapi
+pysqlite3 
+schedule
+datetime
+requests
