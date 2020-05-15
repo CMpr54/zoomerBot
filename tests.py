@@ -77,25 +77,32 @@ def data_day():
     return ['{}.{}.{}'.format(day, month, today.year), weekday]
 
 
-url = 'https://docs.google.com/forms/d/e/1FAIpQLSc079VlmVT4mfiayMCO14BuPkt8Tx8ZAyDApQ9qtX03Luoudg/formResponse'
+url = "https://docs.google.com/forms/d/e/1FAIpQLSe9AVNY-Ff0JJvAqX4nEz2-ueiAQwPVNnZRZlToiBAgVanmYA/formResponse"
+# url = "https://docs.google.com/forms/d/e/1FAIpQLSczAO0SaL-V6YgpPUvCeag-HYdl1IQ9JEViUNAUu5Y8yBfxFw/formResponse"
 
 
 def get_values(num_class, letter_class, fio, date, subject, email):
     values_list = []
+    # values = {
+    #     # class
+    #     "entry.1636959309": "{}".format(num_class),
+    #     # class letter
+    #     "entry.1528634530": "{}".format(letter_class),
+    #     # FIO
+    #     "entry.1437687741": "{}".format(fio),
+    #     # data
+    #     "entry.1630759217": "{}".format(date),
+    #     # subject
+    #     "entry.1620919827": "{}".format(subject),
+    #     # email
+    #     "entry.1076833356": "{}".format(email),
+    #
+    # }
     values = {
-        # class
-        "entry.1636959309": "{}".format(num_class),
+        "entry.452086364": "{}".format(fio),
         # class letter
-        "entry.1528634530": "{}".format(letter_class),
+        "entry.1367140281": "{}".format("Физика"),
         # FIO
-        "entry.1437687741": "{}".format(fio),
-        # data
-        "entry.1630759217": "{}".format(date),
-        # subject
-        "entry.1620919827": "{}".format(subject),
-        # email
-        "entry.1076833356": "{}".format(email),
-
     }
 
     values_list.append(values)
@@ -107,10 +114,10 @@ def send_attendance(url, data):
     for d in data:
         try:
             requests.post(url, data=d)
-            print("Form Submitted.")
-            time.sleep(10)
+            logging.info("Form Submitted.")
+            time.sleep(30)
         except:
-            print("Error Occured!")
+            logging.warning("Error Occured")
 
 
 def job(n):
@@ -148,27 +155,30 @@ def check_time():
         schedule.run_pending()
         # ваш код проверки времени и отправки сообщений по таймеру
         # пауза между проверками, чтобы не загружать процессор
-        time.sleep(5)
+        time.sleep(60)
+
 
 def check_users():
-    while True:
-        if input().lower() == 'users':
-            dictionary_update()
-            print(dictionary_of_users, end='\n')
+    dictionary_update()
+    for i in dictionary_of_users.values():
+        print(i)
+    print(len(dictionary_of_users), "num_of_users")
 
 
 # создание процесса
 p1 = Process(target=check_time, args=())
-p2 = Process(target=check_users, args=())
 
 # ну тут понятно
-schedule.every().day.at("06:00").do(job, 0)
-schedule.every().day.at("06:45").do(job, 1)
-schedule.every().day.at("07:15").do(job, 2)
-schedule.every().day.at("08:00").do(job, 3)
-schedule.every().day.at("08:45").do(job, 4)
-schedule.every().day.at("09:15").do(job, 5)
-schedule.every().day.at("10:00").do(job, 6)
+schedule.every().day.at("17:13").do(check_users)
+# schedule.every().hour.do(check_users)
+# schedule.every().day.at("06:00").do(job, 0)
+# schedule.every().day.at("06:45").do(job, 1)
+# schedule.every().day.at("07:15").do(job, 2)
+# schedule.every().day.at("08:00").do(job, 3)
+# schedule.every().day.at("08:45").do(job, 4)
+# schedule.every().day.at("09:15").do(job, 5)
+# schedule.every().day.at("10:00").do(job, 6)
+schedule.every().minute.do(job, 0)
 
 """
                                         Хэндлеры
@@ -247,7 +257,6 @@ def send_text(message):
 """
 # ну это main, тут всё ясно
 if __name__ == '__main__':
-    p2.start()
     p1.start()  # запускаем проверку в отдельном потоке
     while True:  # цикл что бы при падении серверов телеграма бот жил
         try:
