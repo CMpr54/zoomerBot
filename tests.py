@@ -213,6 +213,9 @@ schedule.every().day.at("09:00").do(job, 6)
 
 def check(data):
     data = data.split('\n')
+    for i in list(data[0].lower()):
+        if i not in " абвгдеёжзийклмнопрстуфхцчшщъыьэюя":
+            return False
     if len(data) != 4:
         return False
     elif len(data[0].split()) != 3:
