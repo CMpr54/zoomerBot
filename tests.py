@@ -61,6 +61,9 @@ format_date = {0: 'Monday', 1: 'Tuesday', 2: 'Wednesday', 3: 'Thursday', 4: 'Fri
 keyboard_main = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True)
 keyboard_main.add("Изменить данные")
 
+class UserError(Exception):
+    pass
+
 
 # класс для хранения информации о юзере
 class User:
@@ -273,6 +276,8 @@ def start_message(message):
 def send_text(message):
     try:
         tel_id = message.from_user.id
+        if tel_id not in dictionary_of_users:
+            raise UserError
         if dictionary_of_users[tel_id].change:
             if check(message.text):
                 fio, email, num_class, letter_class = message.text.split("\n")
@@ -297,6 +302,10 @@ def send_text(message):
                            'Молотов Кирилл Дмитриевич\nrandom@mail.ru\n9\nА',
                            'Маршалов Максим Сергеевич\nnanaviju@mail.ru\n10\nА']
                 bot.send_message(message.chat.id, choice(example))
+            else:
+                bot.send_message(message.chat.id, 'Я вас не понимаю', reply_markup=keyboard_main)
+    except UserError as user_error:
+        bot.send_message(message.chat.id, 'Что-то пошло не так, нажмите /start')
     except Exception as main_error:
         logging.error('Unknown error in main {}'.format(main_error))
 
